@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MediCare Hospital — Advanced Healthcare</title>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+
+<!-- TOP BAR -->
+ <!-- <h1>RIla bangla desh</h1> -->
+<div class="topbar">
+  <div class="container topbar-inner">
+    <div class="topbar-left">
+      <span><i class="fas fa-phone-alt"></i> Emergency: +1 (800) 123-4567</span>
+      <span><i class="fas fa-clock"></i> Open 24/7</span>
+    </div>
+    <div class="topbar-right">
+      <a href="pages/login.html">Patient Login</a>
+      <a href="pages/register.html" class="btn-top">Register</a>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">
+      <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+      <div class="logo-text">Medi<span>Care</span></div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="pages/doctors.html">Doctors</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="pages/appointment.html" class="btn-nav">Book Appointment</a>
+    <button class="hamburger" id="hamburger"><i class="fas fa-bars"></i></button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="container hero-content">
+    <div class="hero-text">
+      <div class="hero-badge"><i class="fas fa-shield-alt"></i> Trusted by 50,000+ Patients</div>
+      <h1>Advanced Care<br/><span>For Every Life</span></h1>
+      <p>Experience world-class healthcare with compassionate doctors, cutting-edge technology, and a seamless appointment system — all designed around you.</p>
+      <div class="hero-buttons">
+        <a href="pages/appointment.html" class="btn-primary"><i class="fas fa-calendar-check"></i> Book Appointment</a>
+        <a href="pages/doctors.html" class="btn-secondary"><i class="fas fa-user-md"></i> Meet Our Doctors</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span>15+</span><p>Years Experience</p></div>
+        <div class="stat"><span>200+</span><p>Specialist Doctors</p></div>
+        <div class="stat"><span>50K+</span><p>Happy Patients</p></div>
+      </div>
+    </div>
+    <div class="hero-image">
+      <div class="hero-card hero-card-1">
+        <i class="fas fa-check-circle"></i>
+        <div><strong>Appointment Confirmed</strong><small>Dr. Sarah Johnson — Today 3:00 PM</small></div>
+      </div>
+      <div class="hero-img-wrap">
+        <div class="hero-img-placeholder">
+          <i class="fas fa-hospital"></i>
+        </div>
+      </div>
+      <div class="hero-card hero-card-2">
+        <i class="fas fa-star"></i>
+        <div><strong>4.9 / 5.0</strong><small>Patient Satisfaction</small></div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-wave">
+    <svg viewBox="0 0 1440 80" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#ffffff"/>
+    </svg>
+  </div>
+</section>
+
+<!-- QUICK ACTIONS -->
+<section class="quick-actions">
+  <div class="container">
+    <div class="quick-grid">
+      <a href="pages/appointment.html" class="quick-card">
+        <div class="qc-icon"><i class="fas fa-calendar-plus"></i></div>
+        <h3>Book Appointment</h3>
+        <p>Schedule with your preferred doctor</p>
+        <span class="qc-arrow"><i class="fas fa-arrow-right"></i></span>
+      </a>
+      <a href="pages/doctors.html" class="quick-card">
+        <div class="qc-icon"><i class="fas fa-user-md"></i></div>
+        <h3>Find a Doctor</h3>
+        <p>Browse specialists by department</p>
+        <span class="qc-arrow"><i class="fas fa-arrow-right"></i></span>
+      </a>
+      <a href="pages/login.html" class="quick-card">
+        <div class="qc-icon"><i class="fas fa-file-medical"></i></div>
+        <h3>Patient Portal</h3>
+        <p>View records & appointments</p>
+        <span class="qc-arrow"><i class="fas fa-arrow-right"></i></span>
+      </a>
+      <a href="#contact" class="quick-card">
+        <div class="qc-icon"><i class="fas fa-ambulance"></i></div>
+        <h3>Emergency</h3>
+        <p>24/7 emergency care available</p>
+        <span class="qc-arrow"><i class="fas fa-arrow-right"></i></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Our Services</span>
+      <h2>Comprehensive Medical Care</h2>
+      <p>State-of-the-art facilities across all major medical specialties</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="sc-icon" style="background: #e8f4fd;"><i class="fas fa-heart" style="color:#1a6dc4;"></i></div>
+        <h3>Cardiology</h3>
+        <p>Advanced heart care with expert cardiologists and modern diagnostics.</p>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon" style="background: #edf7ee;"><i class="fas fa-brain" style="color:#2a9d3f;"></i></div>
+        <h3>Neurology</h3>
+        <p>Specialized brain and nervous system treatment by top neurologists.</p>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon" style="background: #fef3e8;"><i class="fas fa-bone" style="color:#e07a2f;"></i></div>
+        <h3>Orthopedics</h3>
+        <p>Complete bone, joint and spine care including minimally invasive surgery.</p>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon" style="background: #fce8f3;"><i class="fas fa-baby" style="color:#c23d8a;"></i></div>
+        <h3>Pediatrics</h3>
+        <p>Gentle, expert care for infants, children and adolescents.</p>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon" style="background: #e8f4fd;"><i class="fas fa-eye" style="color:#1a6dc4;"></i></div>
+        <h3>Ophthalmology</h3>
+        <p>Complete eye care from routine check-ups to complex surgeries.</p>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon" style="background: #f0eaff;"><i class="fas fa-dna" style="color:#7c3aed;"></i></div>
+        <h3>Oncology</h3>
+        <p>Comprehensive cancer screening, diagnosis and treatment programs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOCTORS PREVIEW -->
+<section class="doctors-section" id="doctors">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Our Team</span>
+      <h2>Meet Our Specialists</h2>
+      <p>Board-certified physicians dedicated to your health</p>
+    </div>
+    <div class="doctors-grid">
+      <div class="doctor-card">
+        <div class="doc-img"><div class="doc-avatar"><i class="fas fa-user-md"></i></div></div>
+        <div class="doc-info">
+          <h3>Dr. Sarah Johnson</h3>
+          <span class="doc-dept">Cardiologist</span>
+          <div class="doc-rating"><i class="fas fa-star"></i> 4.9 <small>(124 reviews)</small></div>
+          <a href="pages/appointment.html" class="btn-book">Book Now</a>
+        </div>
+      </div>
+      <div class="doctor-card">
+        <div class="doc-img"><div class="doc-avatar"><i class="fas fa-user-md"></i></div></div>
+        <div class="doc-info">
+          <h3>Dr. Michael Chen</h3>
+          <span class="doc-dept">Neurologist</span>
+          <div class="doc-rating"><i class="fas fa-star"></i> 4.8 <small>(98 reviews)</small></div>
+          <a href="pages/appointment.html" class="btn-book">Book Now</a>
+        </div>
+      </div>
+      <div class="doctor-card">
+        <div class="doc-img"><div class="doc-avatar"><i class="fas fa-user-md"></i></div></div>
+        <div class="doc-info">
+          <h3>Dr. Emily Davis</h3>
+          <span class="doc-dept">Pediatrician</span>
+          <div class="doc-rating"><i class="fas fa-star"></i> 5.0 <small>(211 reviews)</small></div>
+          <a href="pages/appointment.html" class="btn-book">Book Now</a>
+        </div>
+      </div>
+    </div>
+    <div class="section-cta">
+      <a href="pages/doctors.html" class="btn-outline">View All Doctors <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="why-us" id="about">
+  <div class="container why-grid">
+    <div class="why-text">
+      <span class="section-tag">Why MediCare</span>
+      <h2>Healthcare Built Around You</h2>
+      <p>We combine medical excellence with compassionate care. Our patient-first philosophy means every decision is made with your wellbeing at the center.</p>
+      <ul class="why-list">
+        <li><i class="fas fa-check-circle"></i> Board-certified specialists in every department</li>
+        <li><i class="fas fa-check-circle"></i> Latest diagnostic and treatment technology</li>
+        <li><i class="fas fa-check-circle"></i> Easy online appointment booking</li>
+        <li><i class="fas fa-check-circle"></i> Transparent billing and insurance support</li>
+        <li><i class="fas fa-check-circle"></i> Secure patient portal for health records</li>
+      </ul>
+      <a href="pages/appointment.html" class="btn-primary">Get Started Today</a>
+    </div>
+    <div class="why-image">
+      <div class="why-img-box">
+        <div class="why-img-placeholder"><i class="fas fa-hospital-alt"></i></div>
+        <div class="why-badge-box">
+          <div class="why-badge"><i class="fas fa-award"></i><div><strong>Top Hospital</strong><small>Award 2024</small></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-tag">Testimonials</span>
+      <h2>What Patients Say</h2>
+    </div>
+    <div class="testi-grid">
+      <div class="testi-card">
+        <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"The appointment booking was incredibly easy. Dr. Johnson was thorough and caring. Best hospital experience I've ever had."</p>
+        <div class="testi-author"><div class="testi-avatar">JM</div><div><strong>James Miller</strong><small>Cardiac Patient</small></div></div>
+      </div>
+      <div class="testi-card testi-featured">
+        <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"MediCare's online portal made managing my family's health records so simple. The staff is exceptional and genuinely cares."</p>
+        <div class="testi-author"><div class="testi-avatar">AL</div><div><strong>Angela Lee</strong><small>Regular Patient</small></div></div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"My child received amazing care in the pediatrics department. Dr. Davis made the whole experience stress-free and comfortable."</p>
+        <div class="testi-author"><div class="testi-avatar">RK</div><div><strong>Rachel Kim</strong><small>Pediatrics Parent</small></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container contact-grid">
+    <div class="contact-info">
+      <span class="section-tag">Contact Us</span>
+      <h2>Get In Touch</h2>
+      <p>Our team is here to help you 24/7. Reach out for appointments, emergencies or general inquiries.</p>
+      <div class="contact-items">
+        <div class="contact-item"><i class="fas fa-map-marker-alt"></i><div><strong>Address</strong><p>123 Medical Drive, Health City, NY 10001</p></div></div>
+        <div class="contact-item"><i class="fas fa-phone"></i><div><strong>Phone</strong><p>+1 (800) 123-4567</p></div></div>
+        <div class="contact-item"><i class="fas fa-envelope"></i><div><strong>Email</strong><p>info@medicare-hospital.com</p></div></div>
+        <div class="contact-item"><i class="fas fa-clock"></i><div><strong>Hours</strong><p>Emergency: 24/7 | OPD: 8AM – 8PM</p></div></div>
+      </div>
+    </div>
+    <div class="contact-form-box">
+      <h3>Send a Message</h3>
+      <form class="contact-form" onsubmit="handleContact(event)">
+        <div class="form-row">
+          <input type="text" placeholder="Your Name" required />
+          <input type="email" placeholder="Email Address" required />
+        </div>
+        <input type="text" placeholder="Subject" />
+        <textarea placeholder="Your message..." rows="4"></textarea>
+        <button type="submit" class="btn-primary">Send Message <i class="fas fa-paper-plane"></i></button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <div class="logo"><div class="logo-icon"><i class="fas fa-heartbeat"></i></div><div class="logo-text">Medi<span>Care</span></div></div>
+      <p>Providing compassionate, expert medical care since 2009. Your health is our mission.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="pages/doctors.html">Our Doctors</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="pages/appointment.html">Appointments</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Patient Services</h4>
+      <ul>
+        <li><a href="pages/register.html">Patient Registration</a></li>
+        <li><a href="pages/login.html">Patient Portal</a></li>
+        <li><a href="#">Medical Records</a></li>
+        <li><a href="#">Insurance Info</a></li>
+        <li><a href="#">Billing</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Emergency</h4>
+      <div class="emergency-box">
+        <i class="fas fa-ambulance"></i>
+        <div>
+          <strong>24/7 Emergency</strong>
+          <p>+1 (800) 123-4567</p>
+        </div>
+      </div>
+      <p style="margin-top:1rem; font-size:0.85rem;">For life-threatening emergencies, call 911 immediately.</p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 MediCare Hospital. All Rights Reserved.</p>
+    <div><a href="#">Privacy Policy</a> · <a href="#">Terms of Use</a></div>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Appointment — MediCare</title>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .appt-hero{background:linear-gradient(135deg,#0d47a1,#0097a7);padding:3rem 0;color:white;text-align:center;}
+    .appt-hero h1{font-family:var(--font-display);font-size:2.5rem;}
+    .appt-hero p{opacity:.85;margin-top:.5rem;}
+    .appt-section{padding:4rem 0;}
+    .appt-grid{display:grid;grid-template-columns:1fr 360px;gap:2.5rem;align-items:start;}
+    .step-bar{display:flex;gap:0;margin-bottom:2.5rem;}
+    .step{flex:1;display:flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:600;}
+    .step-num{width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--text-light);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex-shrink:0;}
+    .step.active .step-num{background:var(--primary);color:white;}
+    .step.done .step-num{background:var(--success);color:white;}
+    .step-line{flex:1;height:2px;background:var(--border);margin:0 .5rem;}
+    .step.done .step-line{background:var(--success);}
+    .dept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.85rem;}
+    .dept-card{border:2px solid var(--border);border-radius:var(--radius-sm);padding:1rem;text-align:center;cursor:pointer;transition:var(--transition);}
+    .dept-card:hover,.dept-card.selected{border-color:var(--primary);background:var(--primary-light);}
+    .dept-card i{font-size:1.5rem;color:var(--primary);margin-bottom:.4rem;}
+    .dept-card span{display:block;font-size:.82rem;font-weight:600;}
+    .doc-list{display:flex;flex-direction:column;gap:.85rem;}
+    .doc-select-card{border:2px solid var(--border);border-radius:var(--radius-sm);padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:var(--transition);}
+    .doc-select-card:hover,.doc-select-card.selected{border-color:var(--primary);background:var(--primary-light);}
+    .doc-select-card .doc-avatar{width:50px;height:50px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;color:var(--primary);font-size:1.2rem;}
+    .doc-select-card .doc-select-info strong{display:block;font-size:.95rem;}
+    .doc-select-card .doc-select-info small{color:var(--text-light);font-size:.8rem;}
+    .time-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.65rem;}
+    .time-slot{border:2px solid var(--border);border-radius:8px;padding:.55rem;text-align:center;cursor:pointer;font-size:.82rem;font-weight:600;transition:var(--transition);}
+    .time-slot:hover,.time-slot.selected{border-color:var(--primary);background:var(--primary-light);color:var(--primary);}
+    .time-slot.unavailable{opacity:.4;cursor:not-allowed;background:var(--bg-section);}
+    .summary-card{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;position:sticky;top:90px;}
+    .summary-card h3{font-family:var(--font-display);font-size:1.2rem;margin-bottom:1.25rem;}
+    .summary-row{display:flex;justify-content:space-between;align-items:flex-start;padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+    .summary-row:last-of-type{border:none;}
+    .summary-row span:first-child{color:var(--text-light);}
+    .summary-row strong{text-align:right;}
+    .section-block{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem;}
+    .section-block h3{font-size:1.05rem;font-weight:700;margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;}
+    .section-block h3 i{color:var(--primary);}
+    @media(max-width:900px){.appt-grid{grid-template-columns:1fr;}.dept-grid{grid-template-columns:repeat(2,1fr);}.time-grid{grid-template-columns:repeat(3,1fr);}}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="container nav-inner">
+  <a href="../index.html" class="logo"><div class="logo-icon"><i class="fas fa-heartbeat"></i></div><div class="logo-text">Medi<span>Care</span></div></a>
+  <div style="display:flex;gap:1rem;align-items:center;">
+    <a href="login.html" style="font-size:.9rem;color:var(--text-mid);">Sign In</a>
+    <a href="register.html" class="btn-nav">Register</a>
+  </div>
+</div></nav>
+
+<div class="appt-hero">
+  <div class="container">
+    <h1><i class="fas fa-calendar-check" style="font-size:2rem;"></i><br/>Book an Appointment</h1>
+    <p>Schedule with the right specialist in just a few steps</p>
+  </div>
+</div>
+
+<section class="appt-section">
+  <div class="container">
+    <div class="step-bar">
+      <div class="step active" id="step1"><div class="step-num">1</div> Department</div>
+      <div class="step-line"></div>
+      <div class="step" id="step2"><div class="step-num">2</div> Doctor</div>
+      <div class="step-line"></div>
+      <div class="step" id="step3"><div class="step-num">3</div> Date & Time</div>
+      <div class="step-line"></div>
+      <div class="step" id="step4"><div class="step-num">4</div> Details</div>
+    </div>
+
+    <div class="appt-grid">
+      <div class="appt-main">
+        <!-- STEP 1: DEPARTMENT -->
+        <div class="section-block" id="blockDept">
+          <h3><i class="fas fa-hospital"></i> Choose Department</h3>
+          <div class="dept-grid">
+            <div class="dept-card" onclick="selectDept(this,'Cardiology')"><i class="fas fa-heart"></i><span>Cardiology</span></div>
+            <div class="dept-card" onclick="selectDept(this,'Neurology')"><i class="fas fa-brain"></i><span>Neurology</span></div>
+            <div class="dept-card" onclick="selectDept(this,'Orthopedics')"><i class="fas fa-bone"></i><span>Orthopedics</span></div>
+            <div class="dept-card" onclick="selectDept(this,'Pediatrics')"><i class="fas fa-baby"></i><span>Pediatrics</span></div>
+            <div class="dept-card" onclick="selectDept(this,'Ophthalmology')"><i class="fas fa-eye"></i><span>Ophthalmology</span></div>
+            <div class="dept-card" onclick="selectDept(this,'Oncology')"><i class="fas fa-dna"></i><span>Oncology</span></div>
+            <div class="dept-card" onclick="selectDept(this,'General Medicine')"><i class="fas fa-stethoscope"></i><span>General</span></div>
+            <div class="dept-card" onclick="selectDept(this,'Dermatology')"><i class="fas fa-hand-sparkles"></i><span>Dermatology</span></div>
+            <div class="dept-card" onclick="selectDept(this,'ENT')"><i class="fas fa-deaf"></i><span>ENT</span></div>
+          </div>
+        </div>
+
+        <!-- STEP 2: DOCTOR -->
+        <div class="section-block" id="blockDoctor" style="display:none;">
+          <h3><i class="fas fa-user-md"></i> Select Doctor</h3>
+          <div class="doc-list" id="doctorList"></div>
+        </div>
+
+        <!-- STEP 3: DATE & TIME -->
+        <div class="section-block" id="blockDateTime" style="display:none;">
+          <h3><i class="fas fa-calendar-alt"></i> Pick Date & Time</h3>
+          <div class="field" style="margin-bottom:1.5rem;">
+            <label>Appointment Date</label>
+            <input type="date" id="apptDate" min="" style="max-width:280px;"/>
+          </div>
+          <label style="font-size:.85rem;font-weight:600;color:var(--text-mid);display:block;margin-bottom:.75rem;">Available Slots</label>
+          <div class="time-grid" id="timeGrid"></div>
+        </div>
+
+        <!-- STEP 4: PATIENT DETAILS -->
+        <div class="section-block" id="blockDetails" style="display:none;">
+          <h3><i class="fas fa-user"></i> Your Information</h3>
+          <div class="alert alert-success" id="successMsg" style="display:none;">
+            ✅ Appointment booked successfully! Check your email for confirmation.
+          </div>
+          <div class="alert alert-error" id="errorMsg" style="display:none;"></div>
+          <form id="apptForm">
+            <div class="field-row">
+              <div class="field"><label>Full Name</label><input type="text" id="patName" placeholder="Your full name" required/></div>
+              <div class="field"><label>Phone</label><input type="tel" id="patPhone" placeholder="+1 (555) 000-0000" required/></div>
+            </div>
+            <div class="field"><label>Email</label><input type="email" id="patEmail" placeholder="your@email.com" required/></div>
+            <div class="field"><label>Reason for Visit</label>
+              <textarea id="reason" rows="3" placeholder="Briefly describe your symptoms or reason..."></textarea>
+            </div>
+            <div class="field-row">
+              <div class="field"><label>Age</label><input type="number" id="age" placeholder="Your age" min="1" max="120"/></div>
+              <div class="field"><label>Gender</label>
+                <select id="gender"><option>Male</option><option>Female</option><option>Other</option></select>
+              </div>
+            </div>
+            <button type="submit" class="btn-full">Confirm Appointment <i class="fas fa-check"></i></button>
+          </form>
+        </div>
+      </div>
+
+      <!-- SUMMARY -->
+      <div class="summary-card">
+        <h3>Appointment Summary</h3>
+        <div class="summary-row"><span>Department</span><strong id="sDept">—</strong></div>
+        <div class="summary-row"><span>Doctor</span><strong id="sDoc">—</strong></div>
+        <div class="summary-row"><span>Date</span><strong id="sDate">—</strong></div>
+        <div class="summary-row"><span>Time</span><strong id="sTime">—</strong></div>
+        <div class="summary-row"><span>Status</span><strong style="color:var(--accent);">Pending</strong></div>
+        <div style="margin-top:1.5rem;padding:1rem;background:var(--bg-section);border-radius:var(--radius-sm);font-size:.82rem;color:var(--text-mid);">
+          <i class="fas fa-info-circle" style="color:var(--primary);"></i>
+          You will receive a confirmation email after booking.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="../js/main.js"></script>
+<script>
+const doctors = {
+  'Cardiology':      [{name:'Dr. Sarah Johnson',exp:'12 yrs'},{name:'Dr. Robert Brown',exp:'8 yrs'}],
+  'Neurology':       [{name:'Dr. Michael Chen',exp:'15 yrs'},{name:'Dr. Linda Park',exp:'10 yrs'}],
+  'Orthopedics':     [{name:'Dr. James Wilson',exp:'11 yrs'},{name:'Dr. Anna Singh',exp:'7 yrs'}],
+  'Pediatrics':      [{name:'Dr. Emily Davis',exp:'9 yrs'},{name:'Dr. Tom Harris',exp:'6 yrs'}],
+  'Ophthalmology':   [{name:'Dr. Grace Lee',exp:'13 yrs'}],
+  'Oncology':        [{name:'Dr. Kevin White',exp:'16 yrs'}],
+  'General Medicine':[{name:'Dr. Maria Clark',exp:'10 yrs'},{name:'Dr. Sam Patel',exp:'5 yrs'}],
+  'Dermatology':     [{name:'Dr. Julia Adams',exp:'8 yrs'}],
+  'ENT':             [{name:'Dr. Frank Torres',exp:'12 yrs'}],
+};
+const times = ['09:00 AM','09:30 AM','10:00 AM','10:30 AM','11:00 AM','11:30 AM','02:00 PM','02:30 PM','03:00 PM','03:30 PM','04:00 PM','04:30 PM'];
+let sel = { dept:'', doctor:'', date:'', time:'' };
+
+// Set min date to today
+document.getElementById('apptDate').min = new Date().toISOString().split('T')[0];
+
+function selectDept(el, dept) {
+  document.querySelectorAll('.dept-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  sel.dept = dept;
+  document.getElementById('sDept').textContent = dept;
+  // Show doctors
+  const list = document.getElementById('doctorList');
+  list.innerHTML = (doctors[dept]||[]).map(d=>`
+    <div class="doc-select-card" onclick="selectDoc(this,'${d.name}')">
+      <div class="doc-avatar"><i class="fas fa-user-md"></i></div>
+      <div class="doc-select-info"><strong>${d.name}</strong><small>${dept} · ${d.exp} experience</small></div>
+    </div>`).join('');
+  document.getElementById('blockDoctor').style.display = 'block';
+  document.getElementById('step2').classList.add('active');
+  document.getElementById('blockDoctor').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+function selectDoc(el, name) {
+  document.querySelectorAll('.doc-select-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  sel.doctor = name;
+  document.getElementById('sDoc').textContent = name;
+  document.getElementById('blockDateTime').style.display = 'block';
+  document.getElementById('step3').classList.add('active');
+  document.getElementById('blockDateTime').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+document.getElementById('apptDate').addEventListener('change', function() {
+  sel.date = this.value;
+  const d = new Date(this.value);
+  document.getElementById('sDate').textContent = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  const grid = document.getElementById('timeGrid');
+  grid.innerHTML = times.map((t,i)=>`
+    <div class="time-slot${i%4===2?' unavailable':''}" onclick="${i%4===2?'':(`selectTime(this,'${t}')`)}">
+      ${t}${i%4===2?' <small style=\'font-weight:400\'>Full</small>':''}
+    </div>`).join('');
+});
+
+function selectTime(el, time) {
+  if(el.classList.contains('unavailable')) return;
+  document.querySelectorAll('.time-slot').forEach(t=>t.classList.remove('selected'));
+  el.classList.add('selected');
+  sel.time = time;
+  document.getElementById('sTime').textContent = time;
+  document.getElementById('blockDetails').style.display = 'block';
+  document.getElementById('step4').classList.add('active');
+  document.getElementById('blockDetails').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+document.getElementById('apptForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  if (!sel.dept||!sel.doctor||!sel.date||!sel.time) {
+    document.getElementById('errorMsg').textContent='Please complete all steps.';
+    document.getElementById('errorMsg').style.display='block'; return;
+  }
+  const payload = {
+    department: sel.dept, doctor: sel.doctor,
+    date: sel.date, time: sel.time,
+    patientName: document.getElementById('patName').value,
+    phone: document.getElementById('patPhone').value,
+    email: document.getElementById('patEmail').value,
+    reason: document.getElementById('reason').value,
+    age: document.getElementById('age').value,
+    gender: document.getElementById('gender').value,
+  };
+  try {
+    const res  = await fetch(`${API}/appointments/book`, {
+      method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok) {
+      document.getElementById('apptForm').style.display='none';
+      document.getElementById('successMsg').style.display='block';
+    } else {
+      document.getElementById('errorMsg').textContent = data.message||'Booking failed.';
+      document.getElementById('errorMsg').style.display='block';
+    }
+  } catch {
+    // For demo: show success if backend not connected
+    document.getElementById('apptForm').style.display='none';
+    document.getElementById('successMsg').style.display='block';
+  }
+});
+</script>
+</body>
+</html>

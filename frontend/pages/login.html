@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Patient Login — MediCare</title>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<nav class="navbar"><div class="container nav-inner">
+  <a href="../index.html" class="logo"><div class="logo-icon"><i class="fas fa-heartbeat"></i></div><div class="logo-text">Medi<span>Care</span></div></a>
+</div></nav>
+
+<div class="page-wrapper">
+  <div class="form-card">
+    <div class="logo" style="justify-content:center;margin-bottom:1.5rem;">
+      <div class="logo-icon" style="width:52px;height:52px;font-size:1.4rem;"><i class="fas fa-user"></i></div>
+    </div>
+    <h2 style="text-align:center;">Welcome Back</h2>
+    <p class="sub" style="text-align:center;">Sign in to your patient portal</p>
+
+    <div class="alert alert-success" id="successMsg"></div>
+    <div class="alert alert-error" id="errorMsg"></div>
+
+    <form id="loginForm">
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="you@email.com" required/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" required/>
+      </div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+        <a href="#" style="font-size:0.85rem;color:var(--primary);">Forgot Password?</a>
+      </div>
+      <button type="submit" class="btn-full" id="loginBtn">
+        <span id="loginText">Sign In</span>
+      </button>
+    </form>
+    <div class="form-footer">
+      Don't have an account? <a href="register.html">Register here</a>
+    </div>
+    <div class="form-footer" style="margin-top:0.5rem;">
+      <a href="admin-login.html" style="color:var(--text-light);font-size:0.82rem;">Admin / Doctor Login →</a>
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  const text = document.getElementById('loginText');
+  btn.disabled = true; text.textContent = 'Signing in...';
+
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const res = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (res.ok) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      showAlert('successMsg', 'Login successful! Redirecting...');
+      setTimeout(() => window.location.href = 'patient-dashboard.html', 1000);
+    } else {
+      showAlert('errorMsg', data.message || 'Invalid credentials');
+    }
+  } catch {
+    showAlert('errorMsg', 'Server error. Please try again.');
+  }
+  btn.disabled = false; text.textContent = 'Sign In';
+});
+
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 4000);
+}
+</script>
+</body>
+</html>

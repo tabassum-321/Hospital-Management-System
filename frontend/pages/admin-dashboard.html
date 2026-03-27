@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard — MediCare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{--primary:#1565C0;--accent:#00ACC1;--success:#2e7d32;--danger:#c62828;--warning:#f59e0b;--text-dark:#1a1a2e;--text-mid:#4a4a6a;--text-light:#7a7a9a;--border:#e2ecf8;--bg:#f4f8ff;--white:#ffffff;--sidebar-w:250px;--font-body:'DM Sans',sans-serif;--font-display:'Playfair Display',serif;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--text-dark);display:flex;min-height:100vh;}
+    /* SIDEBAR */
+    .sidebar{width:var(--sidebar-w);background:var(--text-dark);color:white;display:flex;flex-direction:column;min-height:100vh;position:fixed;top:0;left:0;z-index:100;}
+    .sidebar-logo{padding:1.5rem 1.25rem;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:.65rem;}
+    .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+    .logo-text{font-family:var(--font-display);font-size:1.2rem;font-weight:700;}
+    .logo-text span{color:var(--accent);}
+    .sidebar-nav{padding:1.25rem 0;flex:1;}
+    .nav-label{padding:.4rem 1.25rem;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:.5rem;}
+    .nav-item{display:flex;align-items:center;gap:.75rem;padding:.7rem 1.25rem;color:rgba(255,255,255,.65);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;border-left:3px solid transparent;}
+    .nav-item:hover,.nav-item.active{background:rgba(255,255,255,.07);color:white;border-left-color:var(--accent);}
+    .nav-item i{width:18px;text-align:center;}
+    .sidebar-footer{padding:1.25rem;border-top:1px solid rgba(255,255,255,.1);}
+    .sidebar-user{display:flex;align-items:center;gap:.75rem;}
+    .user-ava{width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+    .user-info strong{display:block;font-size:.85rem;color:white;}
+    .user-info small{color:rgba(255,255,255,.5);font-size:.75rem;}
+    /* MAIN */
+    .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+    .topbar{background:white;border-bottom:1px solid var(--border);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+    .topbar h2{font-size:1.15rem;font-weight:700;}
+    .topbar-right{display:flex;align-items:center;gap:1rem;}
+    .badge{background:#fce8e8;color:var(--danger);border-radius:20px;padding:.2rem .7rem;font-size:.78rem;font-weight:600;}
+    .page-body{padding:2rem;flex:1;}
+    /* STATS */
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;}
+    .stat-card{background:white;border:1px solid var(--border);border-radius:14px;padding:1.5rem;display:flex;align-items:center;gap:1.25rem;}
+    .stat-icon{width:52px;height:52px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+    .stat-card h3{font-size:1.6rem;font-weight:700;font-family:var(--font-display);}
+    .stat-card p{font-size:.82rem;color:var(--text-light);}
+    .stat-change{font-size:.78rem;margin-top:.15rem;}
+    .up{color:var(--success);}
+    .down{color:var(--danger);}
+    /* TABLE */
+    .section-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
+    .section-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .section-head h3{font-size:1rem;font-weight:700;}
+    table{width:100%;border-collapse:collapse;}
+    th,td{padding:.85rem 1.25rem;text-align:left;font-size:.85rem;}
+    th{background:var(--bg);font-weight:700;color:var(--text-mid);font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;}
+    tr:not(:last-child) td{border-bottom:1px solid var(--border);}
+    tr:hover td{background:#fafcff;}
+    .status{display:inline-block;padding:.25rem .75rem;border-radius:20px;font-size:.75rem;font-weight:600;}
+    .status.pending{background:#fff8e1;color:#f59e0b;}
+    .status.confirmed{background:#e8f5e9;color:var(--success);}
+    .status.cancelled{background:#fce8e8;color:var(--danger);}
+    .btn-sm{padding:.35rem .85rem;border-radius:8px;border:1.5px solid;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;}
+    .btn-confirm{border-color:var(--success);color:var(--success);background:white;}
+    .btn-confirm:hover{background:var(--success);color:white;}
+    .btn-cancel{border-color:var(--danger);color:var(--danger);background:white;}
+    .btn-cancel:hover{background:var(--danger);color:white;}
+    /* BOTTOM GRID */
+    .bottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+    .quick-stat{padding:.75rem 1.25rem;display:flex;justify-content:space-between;align-items:center;}
+    .quick-stat:not(:last-child){border-bottom:1px solid var(--border);}
+    @media(max-width:1024px){.stats-grid{grid-template-columns:repeat(2,1fr);}.bottom-grid{grid-template-columns:1fr;}}
+    @media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;}.stats-grid{grid-template-columns:1fr 1fr;}}
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div class="logo-text">Medi<span>Care</span></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <div class="nav-item active" onclick="showSection('dashboard')"><i class="fas fa-th-large"></i> Dashboard</div>
+    <div class="nav-item" onclick="showSection('appointments')"><i class="fas fa-calendar-check"></i> Appointments</div>
+    <div class="nav-item" onclick="showSection('patients')"><i class="fas fa-users"></i> Patients</div>
+    <div class="nav-item" onclick="showSection('doctors')"><i class="fas fa-user-md"></i> Doctors</div>
+    <div class="nav-label">Management</div>
+    <div class="nav-item" onclick="showSection('departments')"><i class="fas fa-hospital"></i> Departments</div>
+    <div class="nav-item" onclick="showSection('reports')"><i class="fas fa-chart-bar"></i> Reports</div>
+    <div class="nav-item" onclick="showSection('settings')"><i class="fas fa-cog"></i> Settings</div>
+    <div class="nav-label">Account</div>
+    <div class="nav-item" onclick="window.location.href='../index.html'"><i class="fas fa-home"></i> Website</div>
+    <div class="nav-item" onclick="logout()" style="color:rgba(239,83,80,.8);"><i class="fas fa-sign-out-alt"></i> Logout</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="user-ava"><i class="fas fa-user-shield"></i></div>
+      <div class="user-info"><strong>Admin User</strong><small>Super Admin</small></div>
+    </div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <h2 id="pageTitle">Dashboard Overview</h2>
+    <div class="topbar-right">
+      <span id="currentDate" style="font-size:.85rem;color:var(--text-light);"></span>
+      <span class="badge"><i class="fas fa-bell"></i> 4 Alerts</span>
+    </div>
+  </div>
+
+  <div class="page-body">
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#e8f4fd;color:var(--primary);"><i class="fas fa-calendar-check"></i></div>
+        <div><h3 id="totalAppt">—</h3><p>Total Appointments</p><span class="stat-change up">↑ 12% this week</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#edf7ee;color:var(--success);"><i class="fas fa-users"></i></div>
+        <div><h3 id="totalPat">—</h3><p>Registered Patients</p><span class="stat-change up">↑ 8% this month</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fef3e8;color:#e07a2f;"><i class="fas fa-user-md"></i></div>
+        <div><h3 id="totalDocs">—</h3><p>Active Doctors</p><span class="stat-change" style="color:var(--text-light);">Across 9 depts</span></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:#fff8e1;color:var(--warning);"><i class="fas fa-clock"></i></div>
+        <div><h3 id="pendingAppt">—</h3><p>Pending Today</p><span class="stat-change down">Needs review</span></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS TABLE -->
+    <div class="section-card">
+      <div class="section-head">
+        <h3><i class="fas fa-calendar-alt" style="color:var(--primary);margin-right:.5rem;"></i>Recent Appointments</h3>
+        <div style="display:flex;gap:.65rem;">
+          <select id="filterStatus" onchange="renderTable()" style="padding:.4rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-family:var(--font-body);font-size:.83rem;outline:none;">
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead><tr><th>#</th><th>Patient</th><th>Doctor</th><th>Department</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="apptTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bottom-grid">
+      <!-- DEPARTMENTS -->
+      <div class="section-card">
+        <div class="section-head"><h3><i class="fas fa-hospital" style="color:var(--primary);margin-right:.5rem;"></i>Departments</h3></div>
+        <div id="deptList"></div>
+      </div>
+      <!-- QUICK ACTIONS -->
+      <div class="section-card">
+        <div class="section-head"><h3><i class="fas fa-bolt" style="color:var(--warning);margin-right:.5rem;"></i>Quick Actions</h3></div>
+        <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;">
+          <a href="appointment.html" style="display:flex;align-items:center;gap:.75rem;padding:1rem;background:var(--bg);border-radius:10px;text-decoration:none;color:var(--text-dark);font-size:.9rem;font-weight:500;transition:all .2s;" onmouseover="this.style.background='var(--primary)';this.style.color='white';" onmouseout="this.style.background='var(--bg)';this.style.color='var(--text-dark)';"><i class="fas fa-calendar-plus"></i> New Appointment</a>
+          <a href="register.html" style="display:flex;align-items:center;gap:.75rem;padding:1rem;background:var(--bg);border-radius:10px;text-decoration:none;color:var(--text-dark);font-size:.9rem;font-weight:500;transition:all .2s;" onmouseover="this.style.background='var(--primary)';this.style.color='white';" onmouseout="this.style.background='var(--bg)';this.style.color='var(--text-dark)';"><i class="fas fa-user-plus"></i> Add New Patient</a>
+          <div style="display:flex;align-items:center;gap:.75rem;padding:1rem;background:var(--bg);border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:500;transition:all .2s;" onmouseover="this.style.background='var(--primary)';this.style.color='white';" onmouseout="this.style.background='var(--bg)';this.style.color='var(--text-dark)';"><i class="fas fa-file-medical"></i> Generate Report</div>
+          <div style="display:flex;align-items:center;gap:.75rem;padding:1rem;background:var(--bg);border-radius:10px;cursor:pointer;font-size:.9rem;font-weight:500;transition:all .2s;" onmouseover="this.style.background='var(--primary)';this.style.color='white';" onmouseout="this.style.background='var(--bg)';this.style.color='var(--text-dark)';"><i class="fas fa-cog"></i> System Settings</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const API = 'http://localhost:5000/api';
+
+const demoAppointments = [
+  {id:'APT001',patient:'James Miller',doctor:'Dr. Sarah Johnson',dept:'Cardiology',date:'2026-03-26',time:'09:00 AM',status:'confirmed'},
+  {id:'APT002',patient:'Angela Lee',doctor:'Dr. Michael Chen',dept:'Neurology',date:'2026-03-26',time:'10:30 AM',status:'pending'},
+  {id:'APT003',patient:'Rachel Kim',doctor:'Dr. Emily Davis',dept:'Pediatrics',date:'2026-03-26',time:'11:00 AM',status:'confirmed'},
+  {id:'APT004',patient:'Tom Brady',doctor:'Dr. James Wilson',dept:'Orthopedics',date:'2026-03-27',time:'09:30 AM',status:'pending'},
+  {id:'APT005',patient:'Sofia Martinez',doctor:'Dr. Grace Lee',dept:'Ophthalmology',date:'2026-03-27',time:'02:00 PM',status:'cancelled'},
+  {id:'APT006',patient:'John Doe',doctor:'Dr. Maria Clark',dept:'General Medicine',date:'2026-03-28',time:'03:00 PM',status:'pending'},
+];
+const depts = [
+  {name:'Cardiology',docs:2,patients:52},
+  {name:'Neurology',docs:2,patients:38},
+  {name:'Orthopedics',docs:2,patients:44},
+  {name:'Pediatrics',docs:2,patients:61},
+  {name:'Ophthalmology',docs:1,patients:29},
+  {name:'Oncology',docs:1,patients:18},
+];
+
+document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+async function loadStats() {
+  try {
+    const res = await fetch(`${API}/admin/stats`,{headers:{Authorization:`Bearer ${localStorage.getItem('token')}`}});
+    const d = await res.json();
+    document.getElementById('totalAppt').textContent = d.totalAppointments||'—';
+    document.getElementById('totalPat').textContent  = d.totalPatients||'—';
+    document.getElementById('totalDocs').textContent = d.totalDoctors||'—';
+    document.getElementById('pendingAppt').textContent = d.pendingToday||'—';
+  } catch {
+    document.getElementById('totalAppt').textContent = '148';
+    document.getElementById('totalPat').textContent  = '1,247';
+    document.getElementById('totalDocs').textContent = '14';
+    document.getElementById('pendingAppt').textContent = '6';
+  }
+}
+
+function renderTable() {
+  const filter = document.getElementById('filterStatus').value;
+  const data = filter==='all' ? demoAppointments : demoAppointments.filter(a=>a.status===filter);
+  document.getElementById('apptTable').innerHTML = data.map((a,i)=>`
+    <tr>
+      <td style="color:var(--text-light);font-size:.78rem;">${a.id}</td>
+      <td><strong>${a.patient}</strong></td>
+      <td>${a.doctor}</td>
+      <td><span style="background:var(--bg);padding:.2rem .65rem;border-radius:8px;font-size:.78rem;">${a.dept}</span></td>
+      <td>${a.date}</td>
+      <td>${a.time}</td>
+      <td><span class="status ${a.status}">${a.status}</span></td>
+      <td style="display:flex;gap:.4rem;">
+        ${a.status==='pending'?`<button class="btn-sm btn-confirm" onclick="updateStatus(${i},'confirmed')">Confirm</button><button class="btn-sm btn-cancel" onclick="updateStatus(${i},'cancelled')">Cancel</button>`:'—'}
+      </td>
+    </tr>`).join('');
+}
+
+function updateStatus(i,status){
+  demoAppointments[i].status=status;
+  renderTable();
+}
+
+document.getElementById('deptList').innerHTML = depts.map(d=>`
+  <div class="quick-stat">
+    <div><strong style="font-size:.9rem;">${d.name}</strong><div style="font-size:.78rem;color:var(--text-light);">${d.docs} doctors · ${d.patients} patients</div></div>
+    <span class="status confirmed" style="font-size:.75rem;">${d.docs} Docs</span>
+  </div>`).join('');
+
+function showSection(s){ document.getElementById('pageTitle').textContent = s.charAt(0).toUpperCase()+s.slice(1)+' Management'; document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active')); event.target.closest('.nav-item').classList.add('active'); }
+function logout(){ localStorage.clear(); window.location.href='../index.html'; }
+
+loadStats();
+renderTable();
+</script>
+</body>
+</html>

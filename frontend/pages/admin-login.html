@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin / Doctor Login — MediCare</title>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    body{background:linear-gradient(135deg,#0d47a1 0%,#00695c 100%);min-height:100vh;}
+    .page-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+    .form-card{background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.25);padding:3rem;width:100%;max-width:440px;}
+    .role-tabs{display:flex;gap:.5rem;background:#f4f8ff;border-radius:12px;padding:.4rem;margin-bottom:2rem;}
+    .role-tab{flex:1;padding:.65rem;text-align:center;border-radius:8px;cursor:pointer;font-weight:600;font-size:.88rem;color:var(--text-mid);transition:all .2s;}
+    .role-tab.active{background:white;color:var(--primary);box-shadow:0 2px 8px rgba(21,101,192,.15);}
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+  <div class="form-card">
+    <div style="text-align:center;margin-bottom:1.75rem;">
+      <div class="logo-icon" style="width:56px;height:56px;font-size:1.5rem;margin:0 auto 1rem;background:linear-gradient(135deg,#1565c0,#00897b);border-radius:14px;display:flex;align-items:center;justify-content:center;color:white;">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <h2 style="font-family:'Playfair Display',serif;font-size:1.7rem;">Staff Login</h2>
+      <p style="color:var(--text-light);font-size:.88rem;margin-top:.3rem;">MediCare Hospital Management</p>
+    </div>
+
+    <div class="role-tabs">
+      <div class="role-tab active" onclick="setRole('admin',this)" id="tabAdmin"><i class="fas fa-user-shield"></i> Admin</div>
+      <div class="role-tab" onclick="setRole('doctor',this)" id="tabDoctor"><i class="fas fa-user-md"></i> Doctor</div>
+    </div>
+
+    <div class="alert alert-success" id="successMsg"></div>
+    <div class="alert alert-error" id="errorMsg"></div>
+
+    <form id="staffLoginForm">
+      <div class="field">
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="staff@medicare.com" required/>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="••••••••" required/>
+      </div>
+      <div class="field">
+        <label>Staff ID <span style="color:var(--text-light);font-weight:400;">(optional extra verification)</span></label>
+        <input type="text" id="staffId" placeholder="e.g. ADMIN001 or DOC123"/>
+      </div>
+      <button type="submit" class="btn-full" id="loginBtn">Sign In as <span id="roleLabel">Admin</span></button>
+    </form>
+
+    <div style="text-align:center;margin-top:1.25rem;">
+      <a href="login.html" style="font-size:.85rem;color:var(--text-light);">← Patient Login</a>
+    </div>
+
+    <!-- Demo credentials hint -->
+    <div style="margin-top:1.5rem;padding:1rem;background:#f4f8ff;border-radius:10px;font-size:.8rem;color:var(--text-mid);">
+      <strong style="display:block;margin-bottom:.35rem;">Demo Credentials:</strong>
+      Admin: admin@medicare.com / admin123<br/>
+      Doctor: doctor@medicare.com / doctor123
+    </div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+let selectedRole = 'admin';
+
+function setRole(role, el) {
+  selectedRole = role;
+  document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('roleLabel').textContent = role.charAt(0).toUpperCase()+role.slice(1);
+}
+
+document.getElementById('staffLoginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Signing in...';
+
+  const email    = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+
+  try {
+    const res  = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (res.ok && (data.user.role === selectedRole || data.user.role === 'admin')) {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      showAlert('successMsg', 'Login successful! Redirecting...');
+      setTimeout(() => {
+        window.location.href = data.user.role === 'doctor' ? 'doctor-dashboard.html' : 'admin-dashboard.html';
+      }, 1000);
+    } else if (res.ok) {
+      showAlert('errorMsg', 'Access denied. You do not have '+selectedRole+' privileges.');
+    } else {
+      showAlert('errorMsg', data.message || 'Invalid credentials');
+    }
+  } catch {
+    // Demo mode - no backend
+    if (email === 'admin@medicare.com' && password === 'admin123') {
+      localStorage.setItem('user', JSON.stringify({firstName:'Admin',lastName:'User',email,role:'admin'}));
+      showAlert('successMsg', 'Demo login! Redirecting to Admin Dashboard...');
+      setTimeout(() => window.location.href = 'admin-dashboard.html', 1000);
+    } else if (email === 'doctor@medicare.com' && password === 'doctor123') {
+      localStorage.setItem('user', JSON.stringify({firstName:'Dr. Sarah',lastName:'Johnson',email,role:'doctor',specialization:'Cardiology',department:'Cardiology'}));
+      showAlert('successMsg', 'Demo login! Redirecting to Doctor Dashboard...');
+      setTimeout(() => window.location.href = 'doctor-dashboard.html', 1000);
+    } else {
+      showAlert('errorMsg', 'Invalid credentials. Try demo credentials below.');
+    }
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = 'Sign In as <span id="roleLabel">'+selectedRole.charAt(0).toUpperCase()+selectedRole.slice(1)+'</span>';
+});
+
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg; el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+</script>
+</body>
+</html>

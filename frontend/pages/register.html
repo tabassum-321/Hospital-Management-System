@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Patient Registration — MediCare</title>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<nav class="navbar"><div class="container nav-inner">
+  <a href="../index.html" class="logo"><div class="logo-icon"><i class="fas fa-heartbeat"></i></div><div class="logo-text">Medi<span>Care</span></div></a>
+</div></nav>
+
+<div class="page-wrapper">
+  <div class="form-card wide">
+    <h2>Create Your Account</h2>
+    <p class="sub">Join thousands of patients using MediCare's patient portal</p>
+
+    <div class="alert alert-success" id="successMsg"></div>
+    <div class="alert alert-error" id="errorMsg"></div>
+
+    <form id="registerForm">
+      <div class="field-row">
+        <div class="field"><label>First Name</label><input type="text" id="firstName" placeholder="John" required/></div>
+        <div class="field"><label>Last Name</label><input type="text" id="lastName" placeholder="Doe" required/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Email Address</label><input type="email" id="email" placeholder="john@email.com" required/></div>
+        <div class="field"><label>Phone Number</label><input type="tel" id="phone" placeholder="+1 (555) 000-0000" required/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Date of Birth</label><input type="date" id="dob" required/></div>
+        <div class="field"><label>Gender</label>
+          <select id="gender" required>
+            <option value="">Select gender</option>
+            <option>Male</option><option>Female</option><option>Other</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Address</label><input type="text" id="address" placeholder="123 Main St, City, State"/></div>
+      <div class="field-row">
+        <div class="field"><label>Blood Group</label>
+          <select id="bloodGroup">
+            <option value="">Select</option>
+            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div class="field"><label>Emergency Contact</label><input type="tel" id="emergencyContact" placeholder="Emergency phone"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Password</label><input type="password" id="password" placeholder="Min. 6 characters" required/></div>
+        <div class="field"><label>Confirm Password</label><input type="password" id="confirmPassword" placeholder="Repeat password" required/></div>
+      </div>
+      <button type="submit" class="btn-full">Create Account <i class="fas fa-arrow-right"></i></button>
+    </form>
+    <div class="form-footer">Already have an account? <a href="login.html">Sign in</a></div>
+  </div>
+</div>
+
+<script src="../js/main.js"></script>
+<script>
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const password = document.getElementById('password').value;
+  const confirm  = document.getElementById('confirmPassword').value;
+  if (password !== confirm) return showAlert('errorMsg', 'Passwords do not match!');
+
+  const payload = {
+    firstName: document.getElementById('firstName').value,
+    lastName:  document.getElementById('lastName').value,
+    email:     document.getElementById('email').value,
+    phone:     document.getElementById('phone').value,
+    dob:       document.getElementById('dob').value,
+    gender:    document.getElementById('gender').value,
+    address:   document.getElementById('address').value,
+    bloodGroup:document.getElementById('bloodGroup').value,
+    emergencyContact: document.getElementById('emergencyContact').value,
+    password
+  };
+
+  try {
+    const res  = await fetch(`${API}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showAlert('successMsg', 'Account created! Redirecting to login...');
+      setTimeout(() => window.location.href = 'login.html', 1500);
+    } else {
+      showAlert('errorMsg', data.message || 'Registration failed.');
+    }
+  } catch {
+    showAlert('errorMsg', 'Server error. Please try again.');
+  }
+});
+
+function showAlert(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => el.style.display = 'none', 5000);
+}
+</script>
+</body>
+</html>

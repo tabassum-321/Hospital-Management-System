@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Our Doctors — MediCare</title>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    .docs-hero{background:linear-gradient(135deg,#0d47a1,#0097a7);padding:3.5rem 0;color:white;text-align:center;}
+    .docs-hero h1{font-family:var(--font-display);font-size:2.5rem;}
+    .docs-hero p{opacity:.85;margin-top:.5rem;}
+    .docs-section{padding:4rem 0;}
+    .filter-bar{display:flex;flex-wrap:wrap;gap:.65rem;margin-bottom:2.5rem;}
+    .filter-btn{padding:.45rem 1.1rem;border-radius:20px;border:1.5px solid var(--border);background:white;color:var(--text-mid);font-size:.85rem;font-weight:500;cursor:pointer;transition:var(--transition);}
+    .filter-btn:hover,.filter-btn.active{border-color:var(--primary);background:var(--primary);color:white;}
+    .doctors-full-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem;}
+    .doctor-full-card{background:white;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:var(--transition);}
+    .doctor-full-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+    .doc-card-top{background:var(--bg-section);padding:2rem;text-align:center;}
+    .doc-big-avatar{width:90px;height:90px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:2.5rem;color:var(--primary);margin:0 auto .75rem;}
+    .doc-card-top h3{font-size:1rem;font-weight:700;}
+    .doc-card-body{padding:1.25rem;}
+    .doc-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin:.6rem 0;}
+    .doc-tag{background:var(--bg-section);color:var(--text-mid);font-size:.75rem;padding:.2rem .65rem;border-radius:10px;}
+    .doc-meta{font-size:.82rem;color:var(--text-light);margin:.4rem 0;}
+    .doc-meta i{color:var(--primary);margin-right:.35rem;}
+    @media(max-width:600px){.filter-bar{gap:.45rem;}}
+  </style>
+</head>
+<body>
+<nav class="navbar"><div class="container nav-inner">
+  <a href="../index.html" class="logo"><div class="logo-icon"><i class="fas fa-heartbeat"></i></div><div class="logo-text">Medi<span>Care</span></div></a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="doctors.html" style="color:var(--primary);">Doctors</a></li>
+    <li><a href="appointment.html">Appointments</a></li>
+  </ul>
+  <a href="appointment.html" class="btn-nav">Book Appointment</a>
+</div></nav>
+
+<div class="docs-hero">
+  <div class="container">
+    <h1><i class="fas fa-user-md" style="font-size:2rem;"></i><br/>Our Medical Specialists</h1>
+    <p>Board-certified experts across every major medical field</p>
+  </div>
+</div>
+
+<section class="docs-section">
+  <div class="container">
+    <!-- Search -->
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <input type="text" id="searchDoc" placeholder="🔍  Search doctor by name..." style="padding:.75rem 1.2rem;border:1.5px solid var(--border);border-radius:30px;font-family:var(--font-body);font-size:.9rem;outline:none;min-width:280px;"/>
+    </div>
+    <!-- Filters -->
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" onclick="filterDocs(this,'All')">All</button>
+      <button class="filter-btn" onclick="filterDocs(this,'Cardiology')">Cardiology</button>
+      <button class="filter-btn" onclick="filterDocs(this,'Neurology')">Neurology</button>
+      <button class="filter-btn" onclick="filterDocs(this,'Orthopedics')">Orthopedics</button>
+      <button class="filter-btn" onclick="filterDocs(this,'Pediatrics')">Pediatrics</button>
+      <button class="filter-btn" onclick="filterDocs(this,'Ophthalmology')">Ophthalmology</button>
+      <button class="filter-btn" onclick="filterDocs(this,'General Medicine')">General</button>
+      <button class="filter-btn" onclick="filterDocs(this,'Dermatology')">Dermatology</button>
+    </div>
+    <!-- Doctors Grid -->
+    <div class="doctors-full-grid" id="doctorsGrid"></div>
+  </div>
+</section>
+
+<script src="../js/main.js"></script>
+<script>
+const allDoctors = [
+  {name:'Dr. Sarah Johnson',dept:'Cardiology',exp:'12 years',rating:4.9,reviews:124,quals:'MD, FACC'},
+  {name:'Dr. Robert Brown',dept:'Cardiology',exp:'8 years',rating:4.7,reviews:88,quals:'MD, PhD'},
+  {name:'Dr. Michael Chen',dept:'Neurology',exp:'15 years',rating:4.8,reviews:98,quals:'MD, FAAN'},
+  {name:'Dr. Linda Park',dept:'Neurology',exp:'10 years',rating:4.6,reviews:75,quals:'MD'},
+  {name:'Dr. James Wilson',dept:'Orthopedics',exp:'11 years',rating:4.8,reviews:112,quals:'MD, FAAOS'},
+  {name:'Dr. Anna Singh',dept:'Orthopedics',exp:'7 years',rating:4.5,reviews:60,quals:'MD'},
+  {name:'Dr. Emily Davis',dept:'Pediatrics',exp:'9 years',rating:5.0,reviews:211,quals:'MD, FAAP'},
+  {name:'Dr. Tom Harris',dept:'Pediatrics',exp:'6 years',rating:4.7,reviews:90,quals:'MD'},
+  {name:'Dr. Grace Lee',dept:'Ophthalmology',exp:'13 years',rating:4.9,reviews:105,quals:'MD, FACS'},
+  {name:'Dr. Kevin White',dept:'Oncology',exp:'16 years',rating:4.9,reviews:145,quals:'MD, FASCO'},
+  {name:'Dr. Maria Clark',dept:'General Medicine',exp:'10 years',rating:4.6,reviews:200,quals:'MD'},
+  {name:'Dr. Sam Patel',dept:'General Medicine',exp:'5 years',rating:4.5,reviews:55,quals:'MD'},
+  {name:'Dr. Julia Adams',dept:'Dermatology',exp:'8 years',rating:4.8,reviews:132,quals:'MD, FAAD'},
+  {name:'Dr. Frank Torres',dept:'ENT',exp:'12 years',rating:4.7,reviews:88,quals:'MD, FACS'},
+];
+
+let activeFilter = 'All';
+
+function renderDoctors(docs) {
+  const grid = document.getElementById('doctorsGrid');
+  if(!docs.length) { grid.innerHTML = '<p style="color:var(--text-light);padding:2rem;">No doctors found.</p>'; return; }
+  grid.innerHTML = docs.map(d => `
+    <div class="doctor-full-card" data-dept="${d.dept}">
+      <div class="doc-card-top">
+        <div class="doc-big-avatar"><i class="fas fa-user-md"></i></div>
+        <h3>${d.name}</h3>
+        <span class="doc-dept">${d.dept}</span>
+      </div>
+      <div class="doc-card-body">
+        <div class="doc-tags"><span class="doc-tag">${d.quals}</span><span class="doc-tag">${d.exp}</span></div>
+        <div class="doc-meta"><i class="fas fa-star" style="color:#f59e0b;"></i> ${d.rating} <span style="color:var(--text-light);">(${d.reviews} reviews)</span></div>
+        <div class="doc-meta"><i class="fas fa-clock"></i> Mon – Fri, 9AM – 5PM</div>
+        <a href="appointment.html" class="btn-book" style="margin-top:.75rem;">Book Appointment</a>
+      </div>
+    </div>`).join('');
+}
+
+function filterDocs(btn, dept) {
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = dept;
+  applyFilters();
+}
+
+function applyFilters() {
+  const search = document.getElementById('searchDoc').value.toLowerCase();
+  let filtered = allDoctors;
+  if(activeFilter !== 'All') filtered = filtered.filter(d=>d.dept===activeFilter);
+  if(search) filtered = filtered.filter(d=>d.name.toLowerCase().includes(search)||d.dept.toLowerCase().includes(search));
+  renderDoctors(filtered);
+}
+
+document.getElementById('searchDoc').addEventListener('input', applyFilters);
+renderDoctors(allDoctors);
+</script>
+</body>
+</html>

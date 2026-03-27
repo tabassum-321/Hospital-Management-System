@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Patient Dashboard — MediCare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="../css/main.css"/>
+  <style>
+    :root{--primary:#1565C0;--accent:#00ACC1;--success:#2e7d32;--danger:#c62828;--warning:#f59e0b;--text-dark:#1a1a2e;--text-mid:#4a4a6a;--text-light:#7a7a9a;--border:#e2ecf8;--bg:#f4f8ff;--white:#fff;--sidebar-w:260px;--font-body:'DM Sans',sans-serif;--font-display:'Playfair Display',serif;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--text-dark);display:flex;min-height:100vh;}
+    .sidebar{width:var(--sidebar-w);background:linear-gradient(180deg,#0d47a1 0%,#1565c0 100%);color:white;display:flex;flex-direction:column;min-height:100vh;position:fixed;top:0;left:0;z-index:100;}
+    .sidebar-logo{padding:1.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:.7rem;}
+    .logo-icon{width:40px;height:40px;background:rgba(255,255,255,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+    .logo-text{font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:white;}
+    .logo-text span{color:#80deea;}
+    .patient-profile{padding:1.5rem;border-bottom:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;gap:.6rem;}
+    .patient-ava{width:70px;height:70px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:2rem;border:3px solid rgba(255,255,255,.3);}
+    .patient-profile strong{font-size:.95rem;color:white;text-align:center;}
+    .patient-profile small{color:rgba(255,255,255,.6);font-size:.78rem;}
+    .sidebar-nav{padding:1rem 0;flex:1;}
+    .nav-label{padding:.4rem 1.5rem;font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:.5rem;}
+    .nav-item{display:flex;align-items:center;gap:.8rem;padding:.75rem 1.5rem;color:rgba(255,255,255,.65);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;border-left:3px solid transparent;text-decoration:none;}
+    .nav-item:hover,.nav-item.active{background:rgba(255,255,255,.1);color:white;border-left-color:#80deea;}
+    .nav-item i{width:18px;text-align:center;}
+    .sidebar-footer{padding:1.25rem 1.5rem;border-top:1px solid rgba(255,255,255,.12);}
+    .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+    .topbar{background:white;border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+    .topbar h2{font-size:1.15rem;font-weight:700;color:var(--text-dark);}
+    .page-body{padding:2rem;flex:1;}
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;}
+    .stat-card{background:white;border:1px solid var(--border);border-radius:14px;padding:1.4rem;display:flex;align-items:center;gap:1rem;}
+    .stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+    .stat-card h3{font-size:1.5rem;font-weight:700;font-family:var(--font-display);}
+    .stat-card p{font-size:.78rem;color:var(--text-light);}
+    .section-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
+    .section-head{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .section-head h3{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:.5rem;}
+    .section-head h3 i{color:var(--primary);}
+    table{width:100%;border-collapse:collapse;}
+    th,td{padding:.85rem 1.25rem;text-align:left;font-size:.85rem;}
+    th{background:var(--bg);font-weight:700;color:var(--text-mid);font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;}
+    tr:not(:last-child) td{border-bottom:1px solid var(--border);}
+    .status{display:inline-block;padding:.25rem .8rem;border-radius:20px;font-size:.75rem;font-weight:600;}
+    .status.pending{background:#fff8e1;color:#f59e0b;}
+    .status.confirmed{background:#e8f5e9;color:var(--success);}
+    .status.completed{background:#e8f4fd;color:var(--primary);}
+    .status.cancelled{background:#fce8e8;color:var(--danger);}
+    .btn-sm{padding:.35rem .85rem;border-radius:8px;border:1.5px solid;font-size:.78rem;font-weight:600;cursor:pointer;background:white;transition:all .2s;}
+    .btn-cancel-appt{border-color:var(--danger);color:var(--danger);}
+    .btn-cancel-appt:hover{background:var(--danger);color:white;}
+    .empty-state{text-align:center;padding:3rem;color:var(--text-light);}
+    .empty-state i{font-size:3rem;margin-bottom:1rem;display:block;color:var(--border);}
+    .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;padding:1.5rem;}
+    .profile-field label{display:block;font-size:.8rem;font-weight:600;color:var(--text-mid);margin-bottom:.3rem;}
+    .profile-field p{font-size:.92rem;color:var(--text-dark);padding:.6rem .9rem;background:var(--bg);border-radius:8px;}
+    .tab-bar{display:flex;gap:.25rem;border-bottom:2px solid var(--border);padding:0 1.5rem;}
+    .tab{padding:.75rem 1.25rem;font-size:.88rem;font-weight:600;color:var(--text-light);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;}
+    .tab.active{color:var(--primary);border-bottom-color:var(--primary);}
+    .tab-content{display:none;padding:1.5rem;}
+    .tab-content.active{display:block;}
+    .welcome-banner{background:linear-gradient(135deg,var(--primary),var(--accent));border-radius:14px;padding:1.75rem 2rem;color:white;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;}
+    .welcome-banner h2{font-family:var(--font-display);font-size:1.5rem;}
+    .welcome-banner p{opacity:.85;font-size:.9rem;margin-top:.25rem;}
+    .welcome-banner a{background:white;color:var(--primary);padding:.6rem 1.4rem;border-radius:20px;font-weight:700;font-size:.88rem;text-decoration:none;white-space:nowrap;}
+    @media(max-width:900px){.stats-row{grid-template-columns:1fr 1fr;}.sidebar{display:none;}.main{margin-left:0;}.profile-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div class="logo-text">Medi<span>Care</span></div>
+  </div>
+  <div class="patient-profile">
+    <div class="patient-ava"><i class="fas fa-user"></i></div>
+    <strong id="sidebarName">Loading...</strong>
+    <small>Patient Portal</small>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">My Health</div>
+    <a class="nav-item active" onclick="showTab('dashboard')"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a class="nav-item" onclick="showTab('appointments')"><i class="fas fa-calendar-check"></i> My Appointments</a>
+    <a class="nav-item" onclick="showTab('profile')"><i class="fas fa-user-circle"></i> My Profile</a>
+    <a class="nav-item" onclick="showTab('history')"><i class="fas fa-history"></i> Medical History</a>
+    <div class="nav-label">Quick Links</div>
+    <a class="nav-item" href="appointment.html"><i class="fas fa-calendar-plus"></i> Book Appointment</a>
+    <a class="nav-item" href="doctors.html"><i class="fas fa-user-md"></i> Find Doctor</a>
+    <a class="nav-item" href="../index.html"><i class="fas fa-home"></i> Home</a>
+    <a class="nav-item" onclick="doLogout()" style="color:rgba(239,83,80,.8);"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <h2 id="pageTitle">Dashboard</h2>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <span style="font-size:.85rem;color:var(--text-light);" id="dateDisplay"></span>
+      <a href="appointment.html" class="btn-nav" style="padding:.5rem 1.2rem;border-radius:20px;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-weight:600;font-size:.85rem;text-decoration:none;">+ Book Appointment</a>
+    </div>
+  </div>
+
+  <div class="page-body">
+
+    <!-- DASHBOARD TAB -->
+    <div id="tab-dashboard" class="tab-content active">
+      <div class="welcome-banner">
+        <div>
+          <h2>Welcome back, <span id="welcomeName">Patient</span>! 👋</h2>
+          <p>Here's a summary of your health activity at MediCare.</p>
+        </div>
+        <a href="appointment.html">Book Appointment</a>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e8f4fd;color:var(--primary);"><i class="fas fa-calendar-check"></i></div>
+          <div><h3 id="statTotal">0</h3><p>Total Appointments</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fff8e1;color:var(--warning);"><i class="fas fa-clock"></i></div>
+          <div><h3 id="statPending">0</h3><p>Pending</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e8f5e9;color:var(--success);"><i class="fas fa-check-circle"></i></div>
+          <div><h3 id="statConfirmed">0</h3><p>Confirmed</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#f0eaff;color:#7c3aed;"><i class="fas fa-file-medical"></i></div>
+          <div><h3 id="statCompleted">0</h3><p>Completed</p></div>
+        </div>
+      </div>
+      <!-- Upcoming -->
+      <div class="section-card">
+        <div class="section-head"><h3><i class="fas fa-calendar-alt"></i> Upcoming Appointments</h3></div>
+        <div id="upcomingList"><div class="empty-state"><i class="fas fa-calendar"></i>No upcoming appointments</div></div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS TAB -->
+    <div id="tab-appointments" class="tab-content">
+      <div class="section-card">
+        <div class="section-head">
+          <h3><i class="fas fa-calendar-check"></i> All My Appointments</h3>
+          <select id="filterAppt" onchange="renderAppointments()" style="padding:.4rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:var(--font-body);outline:none;">
+            <option value="all">All</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Doctor</th><th>Department</th><th>Date</th><th>Time</th><th>Reason</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="apptTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div id="tab-profile" class="tab-content">
+      <div class="section-card">
+        <div class="section-head"><h3><i class="fas fa-user-circle"></i> My Profile</h3>
+          <button onclick="toggleEdit()" class="btn-sm" style="border-color:var(--primary);color:var(--primary);" id="editBtn">Edit Profile</button>
+        </div>
+        <div class="profile-grid" id="profileView"></div>
+      </div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div id="tab-history" class="tab-content">
+      <div class="section-card">
+        <div class="section-head"><h3><i class="fas fa-history"></i> Medical History</h3></div>
+        <div style="padding:1.5rem;" id="historyContent">
+          <div class="empty-state"><i class="fas fa-file-medical"></i>No medical history records yet.<br><small>Completed appointments will appear here.</small></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const API = 'http://localhost:5000/api';
+let currentUser = null;
+let appointments = [];
+
+document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+// Demo appointments for UI (replace with real API calls)
+const demoAppointments = [
+  {_id:'1',doctor:'Dr. Sarah Johnson',department:'Cardiology',date:'2026-04-02',time:'09:00 AM',reason:'Chest checkup',status:'confirmed'},
+  {_id:'2',doctor:'Dr. Emily Davis',department:'Pediatrics',date:'2026-04-10',time:'11:00 AM',reason:'General consultation',status:'pending'},
+  {_id:'3',doctor:'Dr. Michael Chen',department:'Neurology',date:'2026-03-15',time:'10:30 AM',reason:'Headache follow-up',status:'completed'},
+];
+
+async function loadUser() {
+  const token = localStorage.getItem('token');
+  const saved = JSON.parse(localStorage.getItem('user') || 'null');
+  if (saved) {
+    currentUser = saved;
+    document.getElementById('sidebarName').textContent = `${saved.firstName} ${saved.lastName}`;
+    document.getElementById('welcomeName').textContent = saved.firstName;
+    renderProfile(saved);
+  } else {
+    // Not logged in — redirect
+    window.location.href = 'login.html';
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/appointments/my`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (data.success) appointments = data.appointments;
+    else appointments = demoAppointments;
+  } catch {
+    appointments = demoAppointments;
+  }
+  updateStats();
+  renderUpcoming();
+  renderAppointments();
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent     = appointments.length;
+  document.getElementById('statPending').textContent   = appointments.filter(a=>a.status==='pending').length;
+  document.getElementById('statConfirmed').textContent = appointments.filter(a=>a.status==='confirmed').length;
+  document.getElementById('statCompleted').textContent = appointments.filter(a=>a.status==='completed').length;
+}
+
+function renderUpcoming() {
+  const upcoming = appointments.filter(a => a.status==='confirmed' || a.status==='pending');
+  const el = document.getElementById('upcomingList');
+  if (!upcoming.length) { el.innerHTML = '<div class="empty-state"><i class="fas fa-calendar"></i>No upcoming appointments</div>'; return; }
+  el.innerHTML = `<table><thead><tr><th>Doctor</th><th>Department</th><th>Date</th><th>Time</th><th>Status</th><th>Action</th></tr></thead><tbody>
+    ${upcoming.map(a=>`<tr>
+      <td><strong>${a.doctor}</strong></td>
+      <td>${a.department}</td>
+      <td>${a.date}</td>
+      <td>${a.time}</td>
+      <td><span class="status ${a.status}">${a.status}</span></td>
+      <td><button class="btn-sm btn-cancel-appt" onclick="cancelAppt('${a._id}')">Cancel</button></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+
+function renderAppointments() {
+  const filter = document.getElementById('filterAppt').value;
+  const data = filter==='all' ? appointments : appointments.filter(a=>a.status===filter);
+  const tbody = document.getElementById('apptTableBody');
+  if (!data.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-calendar"></i>No appointments found</div></td></tr>`; return; }
+  tbody.innerHTML = data.map(a=>`<tr>
+    <td><strong>${a.doctor}</strong></td>
+    <td>${a.department}</td>
+    <td>${a.date}</td>
+    <td>${a.time}</td>
+    <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${a.reason||'—'}</td>
+    <td><span class="status ${a.status}">${a.status}</span></td>
+    <td>${(a.status==='pending'||a.status==='confirmed')?`<button class="btn-sm btn-cancel-appt" onclick="cancelAppt('${a._id}')">Cancel</button>`:'—'}</td>
+  </tr>`).join('');
+}
+
+function renderProfile(u) {
+  document.getElementById('profileView').innerHTML = `
+    <div class="profile-field"><label>First Name</label><p>${u.firstName||'—'}</p></div>
+    <div class="profile-field"><label>Last Name</label><p>${u.lastName||'—'}</p></div>
+    <div class="profile-field"><label>Email</label><p>${u.email||'—'}</p></div>
+    <div class="profile-field"><label>Phone</label><p>${u.phone||'—'}</p></div>
+    <div class="profile-field"><label>Date of Birth</label><p>${u.dob?new Date(u.dob).toLocaleDateString():'—'}</p></div>
+    <div class="profile-field"><label>Gender</label><p>${u.gender||'—'}</p></div>
+    <div class="profile-field"><label>Blood Group</label><p>${u.bloodGroup||'—'}</p></div>
+    <div class="profile-field"><label>Address</label><p>${u.address||'—'}</p></div>
+    <div class="profile-field"><label>Emergency Contact</label><p>${u.emergencyContact||'—'}</p></div>
+    <div class="profile-field"><label>Account Created</label><p>${u.createdAt?new Date(u.createdAt).toLocaleDateString():'—'}</p></div>
+  `;
+}
+
+async function cancelAppt(id) {
+  if (!confirm('Are you sure you want to cancel this appointment?')) return;
+  try {
+    const res = await fetch(`${API}/appointments/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+    if (res.ok) {
+      const appt = appointments.find(a=>a._id===id);
+      if (appt) appt.status='cancelled';
+      updateStats(); renderUpcoming(); renderAppointments();
+      alert('Appointment cancelled successfully.');
+    }
+  } catch {
+    const appt = appointments.find(a=>a._id===id);
+    if (appt) appt.status='cancelled';
+    updateStats(); renderUpcoming(); renderAppointments();
+    alert('Appointment cancelled.');
+  }
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  event?.target?.closest('.nav-item')?.classList.add('active');
+  document.getElementById('pageTitle').textContent = name.charAt(0).toUpperCase()+name.slice(1);
+}
+
+function toggleEdit() {
+  alert('Profile editing coming soon! You can update your details through the Patient Portal.');
+}
+
+function doLogout() {
+  localStorage.clear();
+  window.location.href = '../index.html';
+}
+
+loadUser();
+</script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Doctor Dashboard — MediCare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root{--primary:#1565C0;--accent:#00ACC1;--success:#2e7d32;--danger:#c62828;--warning:#f59e0b;--text-dark:#1a1a2e;--text-mid:#4a4a6a;--text-light:#7a7a9a;--border:#e2ecf8;--bg:#f4f8ff;--white:#fff;--sidebar-w:260px;--font-body:'DM Sans',sans-serif;--font-display:'Playfair Display',serif;}
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--text-dark);display:flex;min-height:100vh;}
+    .sidebar{width:var(--sidebar-w);background:linear-gradient(180deg,#00695c 0%,#00897b 100%);color:white;display:flex;flex-direction:column;min-height:100vh;position:fixed;top:0;left:0;z-index:100;}
+    .sidebar-logo{padding:1.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:.7rem;}
+    .logo-icon{width:40px;height:40px;background:rgba(255,255,255,.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+    .logo-text{font-family:var(--font-display);font-size:1.25rem;font-weight:700;color:white;}
+    .logo-text span{color:#b2dfdb;}
+    .doc-profile{padding:1.5rem;border-bottom:1px solid rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;gap:.5rem;}
+    .doc-ava{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:2rem;border:3px solid rgba(255,255,255,.3);}
+    .doc-profile strong{font-size:.95rem;color:white;text-align:center;}
+    .doc-profile small{color:rgba(255,255,255,.6);font-size:.75rem;}
+    .availability-toggle{margin-top:.5rem;display:flex;align-items:center;gap:.5rem;font-size:.8rem;}
+    .toggle{width:36px;height:20px;background:#4caf50;border-radius:10px;position:relative;cursor:pointer;}
+    .toggle-dot{width:16px;height:16px;background:white;border-radius:50%;position:absolute;top:2px;right:2px;transition:all .3s;}
+    .sidebar-nav{padding:1rem 0;flex:1;}
+    .nav-label{padding:.4rem 1.5rem;font-size:.7rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.35);margin-top:.5rem;}
+    .nav-item{display:flex;align-items:center;gap:.8rem;padding:.75rem 1.5rem;color:rgba(255,255,255,.65);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;border-left:3px solid transparent;}
+    .nav-item:hover,.nav-item.active{background:rgba(255,255,255,.1);color:white;border-left-color:#b2dfdb;}
+    .nav-item i{width:18px;text-align:center;}
+    .main{margin-left:var(--sidebar-w);flex:1;display:flex;flex-direction:column;}
+    .topbar{background:white;border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;}
+    .topbar h2{font-size:1.15rem;font-weight:700;}
+    .page-body{padding:2rem;flex:1;}
+    .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;margin-bottom:2rem;}
+    .stat-card{background:white;border:1px solid var(--border);border-radius:14px;padding:1.4rem;display:flex;align-items:center;gap:1rem;}
+    .stat-icon{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+    .stat-card h3{font-size:1.5rem;font-weight:700;font-family:var(--font-display);}
+    .stat-card p{font-size:.78rem;color:var(--text-light);}
+    .section-card{background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:1.5rem;}
+    .section-head{padding:1.2rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .section-head h3{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:.5rem;}
+    table{width:100%;border-collapse:collapse;}
+    th,td{padding:.85rem 1.25rem;text-align:left;font-size:.85rem;}
+    th{background:var(--bg);font-weight:700;color:var(--text-mid);font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;}
+    tr:not(:last-child) td{border-bottom:1px solid var(--border);}
+    tr:hover td{background:#fafcff;}
+    .status{display:inline-block;padding:.25rem .8rem;border-radius:20px;font-size:.75rem;font-weight:600;}
+    .status.pending{background:#fff8e1;color:#f59e0b;}
+    .status.confirmed{background:#e8f5e9;color:var(--success);}
+    .status.completed{background:#e8f4fd;color:var(--primary);}
+    .status.cancelled{background:#fce8e8;color:var(--danger);}
+    .btn-sm{padding:.35rem .85rem;border-radius:8px;border:1.5px solid;font-size:.78rem;font-weight:600;cursor:pointer;background:white;transition:all .2s;}
+    .btn-confirm{border-color:var(--success);color:var(--success);}
+    .btn-confirm:hover{background:var(--success);color:white;}
+    .btn-complete{border-color:var(--primary);color:var(--primary);}
+    .btn-complete:hover{background:var(--primary);color:white;}
+    .schedule-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.75rem;padding:1.5rem;}
+    .day-card{border:1.5px solid var(--border);border-radius:10px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;}
+    .day-card:hover{border-color:#00897b;}
+    .day-card.active{border-color:#00897b;background:#e0f2f1;}
+    .day-card .day-name{font-size:.75rem;font-weight:700;color:var(--text-light);margin-bottom:.35rem;}
+    .day-card .day-time{font-size:.72rem;color:var(--text-mid);}
+    .day-card .day-status{width:8px;height:8px;border-radius:50%;margin:.4rem auto 0;background:#ccc;}
+    .day-card.active .day-status{background:#4caf50;}
+    .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;}
+    @media(max-width:1024px){.stats-row{grid-template-columns:1fr 1fr;}.two-col{grid-template-columns:1fr;}.schedule-grid{grid-template-columns:repeat(4,1fr);}}
+    @media(max-width:768px){.sidebar{display:none;}.main{margin-left:0;}.stats-row{grid-template-columns:1fr 1fr;}}
+  </style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+    <div class="logo-text">Medi<span>Care</span></div>
+  </div>
+  <div class="doc-profile">
+    <div class="doc-ava"><i class="fas fa-user-md"></i></div>
+    <strong id="docSidebarName">Dr. Loading...</strong>
+    <small id="docSidebarDept">Specialist</small>
+    <div class="availability-toggle">
+      <div class="toggle" id="availToggle" onclick="toggleAvailability()"><div class="toggle-dot"></div></div>
+      <span id="availLabel" style="color:rgba(255,255,255,.8);">Available</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Practice</div>
+    <div class="nav-item active" onclick="showSection('overview', this)"><i class="fas fa-th-large"></i> Overview</div>
+    <div class="nav-item" onclick="showSection('appointments', this)"><i class="fas fa-calendar-check"></i> Appointments</div>
+    <div class="nav-item" onclick="showSection('schedule', this)"><i class="fas fa-clock"></i> My Schedule</div>
+    <div class="nav-item" onclick="showSection('patients', this)"><i class="fas fa-users"></i> My Patients</div>
+    <div class="nav-label">Account</div>
+    <div class="nav-item" onclick="showSection('profile', this)"><i class="fas fa-user-circle"></i> Profile</div>
+    <div class="nav-item" href="../index.html" onclick="window.location.href='../index.html'"><i class="fas fa-home"></i> Hospital Site</div>
+    <div class="nav-item" onclick="doLogout()" style="color:rgba(239,83,80,.8);"><i class="fas fa-sign-out-alt"></i> Logout</div>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <h2 id="pageTitle">Doctor Overview</h2>
+    <span id="dateDisplay" style="font-size:.85rem;color:var(--text-light);"></span>
+  </div>
+
+  <div class="page-body">
+
+    <!-- OVERVIEW -->
+    <div id="sec-overview">
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e0f2f1;color:#00897b;"><i class="fas fa-calendar-check"></i></div>
+          <div><h3 id="statToday">0</h3><p>Today's Appointments</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#fff8e1;color:var(--warning);"><i class="fas fa-clock"></i></div>
+          <div><h3 id="statPending">0</h3><p>Pending</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e8f5e9;color:var(--success);"><i class="fas fa-users"></i></div>
+          <div><h3 id="statPatients">0</h3><p>Total Patients</p></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon" style="background:#e8f4fd;color:var(--primary);"><i class="fas fa-star"></i></div>
+          <div><h3 id="statRating">4.8</h3><p>Rating</p></div>
+        </div>
+      </div>
+
+      <div class="two-col">
+        <div class="section-card">
+          <div class="section-head"><h3><i class="fas fa-calendar-alt" style="color:#00897b;"></i> Today's Schedule</h3></div>
+          <div id="todayList" style="padding:0;"></div>
+        </div>
+        <div class="section-card">
+          <div class="section-head"><h3><i class="fas fa-clock" style="color:#00897b;"></i> Weekly Schedule</h3></div>
+          <div class="schedule-grid" id="weeklySchedule"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPOINTMENTS -->
+    <div id="sec-appointments" style="display:none;">
+      <div class="section-card">
+        <div class="section-head">
+          <h3><i class="fas fa-calendar-check" style="color:#00897b;"></i> All Appointments</h3>
+          <div style="display:flex;gap:.65rem;">
+            <select id="filterDoc" onchange="renderDocAppointments()" style="padding:.4rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;">
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="completed">Completed</option>
+            </select>
+            <input type="date" id="filterDate" onchange="renderDocAppointments()" style="padding:.4rem .85rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;font-family:'DM Sans',sans-serif;outline:none;"/>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Patient</th><th>Date</th><th>Time</th><th>Reason</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="docApptTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE -->
+    <div id="sec-schedule" style="display:none;">
+      <div class="section-card">
+        <div class="section-head"><h3><i class="fas fa-clock" style="color:#00897b;"></i> Manage Weekly Schedule</h3>
+          <button onclick="saveSchedule()" style="padding:.45rem 1.1rem;background:#00897b;color:white;border:none;border-radius:8px;font-weight:600;font-size:.85rem;cursor:pointer;">Save Changes</button>
+        </div>
+        <div style="padding:1.5rem;">
+          <p style="font-size:.88rem;color:var(--text-mid);margin-bottom:1.5rem;">Click on a day to toggle availability. Set your time slots below.</p>
+          <div id="fullScheduleGrid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PATIENTS -->
+    <div id="sec-patients" style="display:none;">
+      <div class="section-card">
+        <div class="section-head"><h3><i class="fas fa-users" style="color:#00897b;"></i> My Patients</h3></div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Patient Name</th><th>Last Visit</th><th>Department</th><th>Total Visits</th><th>Status</th></tr></thead>
+            <tbody id="patientsTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="sec-profile" style="display:none;">
+      <div class="section-card">
+        <div class="section-head"><h3><i class="fas fa-user-md" style="color:#00897b;"></i> Doctor Profile</h3></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;padding:1.5rem;" id="docProfileGrid"></div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const API = 'http://localhost:5000/api';
+document.getElementById('dateDisplay').textContent = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+// Demo data
+const demoDocAppts = [
+  {_id:'1',patientName:'James Miller',date:'2026-03-27',time:'09:00 AM',reason:'Chest pain',status:'confirmed'},
+  {_id:'2',patientName:'Angela Lee',date:'2026-03-27',time:'10:00 AM',reason:'Follow-up',status:'pending'},
+  {_id:'3',patientName:'Robert King',date:'2026-03-27',time:'11:30 AM',reason:'ECG review',status:'confirmed'},
+  {_id:'4',patientName:'Sarah White',date:'2026-03-28',time:'09:30 AM',reason:'Palpitations',status:'pending'},
+  {_id:'5',patientName:'John Doe',date:'2026-03-20',time:'02:00 PM',reason:'Annual checkup',status:'completed'},
+];
+const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const schedule = {Monday:{on:true,start:'09:00',end:'17:00'},Tuesday:{on:true,start:'09:00',end:'17:00'},Wednesday:{on:true,start:'09:00',end:'13:00'},Thursday:{on:true,start:'09:00',end:'17:00'},Friday:{on:true,start:'09:00',end:'17:00'},Saturday:{on:false,start:'',end:''},Sunday:{on:false,start:'',end:''}};
+
+function loadDoctorInfo() {
+  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  if (!user) { window.location.href = 'admin-login.html'; return; }
+  document.getElementById('docSidebarName').textContent = `${user.firstName||'Dr.'} ${user.lastName||'Doctor'}`;
+  document.getElementById('docSidebarDept').textContent = user.specialization || 'Specialist';
+  document.getElementById('statToday').textContent = demoDocAppts.filter(a=>a.date===new Date().toISOString().split('T')[0]).length || 3;
+  document.getElementById('statPending').textContent = demoDocAppts.filter(a=>a.status==='pending').length;
+  document.getElementById('statPatients').textContent = '47';
+  renderTodayList();
+  renderWeeklySchedule();
+  renderDocAppointments();
+  renderFullSchedule();
+  renderPatients();
+  if (user) renderDocProfile(user);
+}
+
+function renderTodayList() {
+  const today = demoDocAppts.slice(0,3);
+  document.getElementById('todayList').innerHTML = today.map(a=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.25rem;border-bottom:1px solid var(--border);">
+      <div><strong style="font-size:.88rem;">${a.patientName}</strong><div style="font-size:.78rem;color:var(--text-light);">${a.time} · ${a.reason}</div></div>
+      <span class="status ${a.status}">${a.status}</span>
+    </div>`).join('');
+}
+
+function renderWeeklySchedule() {
+  document.getElementById('weeklySchedule').innerHTML = days.map(d=>`
+    <div class="day-card ${schedule[d].on?'active':''}">
+      <div class="day-name">${d.slice(0,3).toUpperCase()}</div>
+      <div class="day-time">${schedule[d].on?`${schedule[d].start}<br>${schedule[d].end}`:'Off'}</div>
+      <div class="day-status"></div>
+    </div>`).join('');
+}
+
+function renderFullSchedule() {
+  document.getElementById('fullScheduleGrid').innerHTML = days.map(d=>`
+    <div style="display:flex;align-items:center;gap:1rem;padding:.75rem 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+      <div style="width:110px;font-weight:600;font-size:.9rem;">${d}</div>
+      <label style="display:flex;align-items:center;gap:.5rem;font-size:.85rem;">
+        <input type="checkbox" ${schedule[d].on?'checked':''} onchange="schedule['${d}'].on=this.checked;" style="accent-color:#00897b;"/>
+        Available
+      </label>
+      <input type="time" value="${schedule[d].start}" onchange="schedule['${d}'].start=this.value;" style="padding:.35rem .65rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;" ${schedule[d].on?'':'disabled'}/>
+      <span style="font-size:.82rem;color:var(--text-light);">to</span>
+      <input type="time" value="${schedule[d].end}" onchange="schedule['${d}'].end=this.value;" style="padding:.35rem .65rem;border:1.5px solid var(--border);border-radius:8px;font-size:.82rem;" ${schedule[d].on?'':'disabled'}/>
+    </div>`).join('');
+}
+
+let docAppts = [...demoDocAppts];
+function renderDocAppointments() {
+  const filter = document.getElementById('filterDoc').value;
+  const dateFilter = document.getElementById('filterDate').value;
+  let data = filter==='all' ? docAppts : docAppts.filter(a=>a.status===filter);
+  if (dateFilter) data = data.filter(a=>a.date===dateFilter);
+  document.getElementById('docApptTable').innerHTML = data.map((a,i)=>`<tr>
+    <td><strong>${a.patientName}</strong></td>
+    <td>${a.date}</td><td>${a.time}</td>
+    <td>${a.reason||'—'}</td>
+    <td><span class="status ${a.status}">${a.status}</span></td>
+    <td style="display:flex;gap:.4rem;">
+      ${a.status==='pending'?`<button class="btn-sm btn-confirm" onclick="updateDocAppt(${i},'confirmed')">Confirm</button>`:''}
+      ${a.status==='confirmed'?`<button class="btn-sm btn-complete" onclick="updateDocAppt(${i},'completed')">Complete</button>`:''}
+    </td>
+  </tr>`).join('');
+}
+
+function updateDocAppt(i, status) {
+  docAppts[i].status = status;
+  renderDocAppointments();
+  document.getElementById('statPending').textContent = docAppts.filter(a=>a.status==='pending').length;
+}
+
+function renderPatients() {
+  const patients = [
+    {name:'James Miller',last:'2026-03-27',dept:'Cardiology',visits:3,status:'Active'},
+    {name:'Angela Lee',last:'2026-03-20',dept:'Cardiology',visits:1,status:'Active'},
+    {name:'Robert King',last:'2026-03-15',dept:'Cardiology',visits:5,status:'Regular'},
+    {name:'Sarah White',last:'2026-03-01',dept:'Cardiology',visits:2,status:'Active'},
+  ];
+  document.getElementById('patientsTable').innerHTML = patients.map(p=>`<tr>
+    <td><strong>${p.name}</strong></td>
+    <td>${p.last}</td><td>${p.dept}</td><td>${p.visits}</td>
+    <td><span class="status confirmed">${p.status}</span></td>
+  </tr>`).join('');
+}
+
+function renderDocProfile(u) {
+  document.getElementById('docProfileGrid').innerHTML = `
+    <div><label style="font-size:.8rem;font-weight:600;color:var(--text-mid);">Full Name</label><p style="margin-top:.3rem;padding:.6rem .9rem;background:var(--bg);border-radius:8px;">${u.firstName} ${u.lastName}</p></div>
+    <div><label style="font-size:.8rem;font-weight:600;color:var(--text-mid);">Email</label><p style="margin-top:.3rem;padding:.6rem .9rem;background:var(--bg);border-radius:8px;">${u.email||'—'}</p></div>
+    <div><label style="font-size:.8rem;font-weight:600;color:var(--text-mid);">Specialization</label><p style="margin-top:.3rem;padding:.6rem .9rem;background:var(--bg);border-radius:8px;">${u.specialization||'—'}</p></div>
+    <div><label style="font-size:.8rem;font-weight:600;color:var(--text-mid);">Department</label><p style="margin-top:.3rem;padding:.6rem .9rem;background:var(--bg);border-radius:8px;">${u.department||'—'}</p></div>
+    <div><label style="font-size:.8rem;font-weight:600;color:var(--text-mid);">Phone</label><p style="margin-top:.3rem;padding:.6rem .9rem;background:var(--bg);border-radius:8px;">${u.phone||'—'}</p></div>
+    <div><label style="font-size:.8rem;font-weight:600;color:var(--text-mid);">Experience</label><p style="margin-top:.3rem;padding:.6rem .9rem;background:var(--bg);border-radius:8px;">${u.experience||'—'} years</p></div>`;
+}
+
+function toggleAvailability() {
+  const t = document.getElementById('availToggle');
+  const l = document.getElementById('availLabel');
+  t.style.background = t.style.background==='rgb(76, 175, 80)' ? '#e53935' : '#4caf50';
+  l.textContent = l.textContent==='Available' ? 'Unavailable' : 'Available';
+}
+
+function showSection(name, el) {
+  document.querySelectorAll('[id^="sec-"]').forEach(s=>s.style.display='none');
+  document.getElementById('sec-'+name).style.display='block';
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el?.classList.add('active');
+  document.getElementById('pageTitle').textContent = name.charAt(0).toUpperCase()+name.slice(1);
+}
+
+function saveSchedule() { alert('Schedule saved successfully!'); }
+function doLogout() { localStorage.clear(); window.location.href='../index.html'; }
+
+loadDoctorInfo();
+</script>
+</body>
+</html>
