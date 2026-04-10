@@ -16,24 +16,32 @@ The project also demonstrates modern DevOps practices including CI/CD automation
 🛠️ Tech Stack
 
 Frontend:
+
 HTML • CSS • JavaScript
 
 Backend:
+
 Node.js • Express.js
 
 Database:
+
 MongoDB
 
 DevOps Tools:
+
 Jenkins • Docker • SonarQube
 
 Cloud:
+
 AWS EC2
 
 🚀 Getting Started
-🔹 Installation
+🔹 Installation:
+
 git clone https://github.com/tabassum-321/Hospital-Management-System.git
+
 cd Hospital-Management-System
+
 npm install
 
 ▶️ Run Locally
@@ -42,9 +50,12 @@ npm start
 App will run on:
 👉 http://localhost:5000
 
-🐳 Run with Docker
+🐳 Run with Docker:
+
 docker build -t hospital-app .
+
 docker run -p 5000:5000 hospital-app
+
 🔄 CI/CD Pipeline
 
 This project uses an automated DevOps pipeline:
@@ -58,8 +69,8 @@ Deployment on AWS EC2
 
 Add your project screenshots here to make it more attractive
 
-👩‍💻 Author
+👩‍💻 Author:
 Taharima Tabassum
 
-📜 License
+📜 License:
 This project is licensed under the MIT License.
